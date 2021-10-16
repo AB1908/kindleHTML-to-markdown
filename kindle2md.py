@@ -98,6 +98,7 @@ for chapter_marker in kindle_notes:
             entry += f'Note: {kindle_highlight["text"]}\n\n'
         if kindle_highlight["type"] == "highlight":
             entry += f'{kindle_highlight["color"].lower()}\n\n'
+            entry += f'{kindle_highlight["location"]}\n\n'
             entry += f'> {kindle_highlight["text"]}\n\n'
             for note_text in kindle_highlight["notes"]:
                 entry += f'{note_text}\n\n'
