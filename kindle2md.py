@@ -82,7 +82,7 @@ class HighlightsExtract:
         try:
             note_divs = soup.findAll("div", {'class': ["noteHeading","noteText"]})
             book_title = soup.select_one('.bookTitle').contents[0].strip()
-            kindle_notes = {}
+            kindle_notes = KindleHighlights()
             chapter_marker = chapter_init(kindle_notes, note_divs[0].text.partition('-')[2].partition('>'))
             kindle_highlight = {}
             for i in range(len(note_divs)):
@@ -141,60 +141,6 @@ class HighlightsExtract:
             exit(1)
         print(f'Written to: {dest_name}')
 
-class AnnotationObject:
-
-    def __init__(self, chapter, location, text):
-        this.text = text
-        this.location = location
-        this.chapter = chapter
-
-    # The object's format and type is unknown so this must be implemented in derived class.
-    def export_as_markdown(self):
-        raise NotImplementedError("Implement this method")
-
-class KindleMarkdown():
-    # list of highlights?
-
-    # TODO
-
-    pass
-
-class KindleHighlight:
-    # Pass input to this class which parses
-    # Also keep a separate export method for each class?
-    # Allow overriding?
-    kindle_highlight = {"type": "highlight", "color": color, "text": highlight_text, "location": highlight_location, "notes": []}
-
-    def create(self):
-        pass
-
-
-class Highlight(AnnotationObject):
-    def __init__(self, chapter, location, color, text):
-        this.color = color
-        this.text = text
-        this.location = location
-        this.chapter = chapter
-        this.notes = []
-
-    def export_as_markdown(self):
-        # TODO
-        return ""
-
-class Note(AnnotationObject):
-    #Note object that contains note data like location and text
-    # Its relation to a highlight is best left to be determined in the KindleHighlight.
-    # As of now, it is a mystery as to how a note is standalone or related.
-    # Hence the highlight and note objects have been kept separate as it cannot be discerned from the source.
-    # TODO: note.is_standalone()?
-    # TODO: note structure testing
-
-    def __init__(self, chapter, location, text):
-        super(chapter, location, text)
-
-    def export_as_markdown(self):
-        # TODO
-        pass
 
 if __name__ == __main__:
     script_name = basename(__file__)
