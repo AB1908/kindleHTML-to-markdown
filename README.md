@@ -31,7 +31,7 @@ Note - PREFACE TO THE CHARLES DICKENS EDITION >  Location 103
 </div>
 <div class="noteText">
 This is a sample note and highlight from the 1869 Charles Dickens Edition of David Copperfield that is freely available on Gutenberg.
-</div
+</div>
 ```
 
 Out:
