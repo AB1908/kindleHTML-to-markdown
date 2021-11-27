@@ -5,15 +5,20 @@
 
 # TODO: DRY it up to use across other ereaders?? This would essentially create a self-hosted readwise
 # TODO: Create a chapters class for chapters > highlight hierarchy?
-#
-#
+# TODO: Edge cases
+#       - notes/highlights before a chapter def??
+#       - notes/highlights on chapter heading
+#       - 
+#       - 
+# TODO: testing setup
 
 
 from pathlib import Path
 from os.path import basename, splitext
 from sys import argv, exit
 from bs4 import BeautifulSoup
-from enum import Enum
+import kindle
+
 
 class HighlightColor(Enum):
 
