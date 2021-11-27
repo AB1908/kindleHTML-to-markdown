@@ -177,3 +177,9 @@ class Chapter():
         # TODO: potential edge case - same chapter names for two diff chapters
         """Check if the chapter heading points to the current chapter object"""
         return self.chapter_name == chapter_name
+
+class Book():
+
+    def __init__(self, name):
+        self.chapters = []
+        self.name = name.strip()
