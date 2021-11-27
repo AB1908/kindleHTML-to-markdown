@@ -129,9 +129,51 @@ class Note(AnnotationObject):
     # TODO: note.is_standalone()?
     # TODO: note structure testing
 
+    def __eq__(note1, note2):
+        return vars(note1) == vars(note2)
+
+    # TODO: Check if this is required
+    # def __ne__(note1, note2):
+    #     return not note1 == note2
+
     def __init__(self, chapter, location, text):
-        super(chapter, location, text)
+        # super(self, chapter, location, text)
+        super().__init__(chapter, location, text)
 
     def export_as_markdown(self):
         # TODO
         pass
+
+class Chapter():
+
+    def __eq__(chap1, chap2):
+        if len(chap1.kindle_highlights) != len(chap2.kindle_highlights):
+            return False
+        for i in range(len(chap1.kindle_highlights)):
+            if chap1.kindle_highlights[i] != chap2.kindle_highlights[i]:
+                return False
+        chap1_dict = vars(chap1)
+        chap2_dict = vars(chap2)
+        del chap1_dict["kindle_highlights"]
+        del chap2_dict["kindle_highlights"]
+        return chap1_dict == chap2_dict
+        # highlight1_dict = vars(highlight1)
+        # highlight2_dict = vars(highlight2)
+        # del highlight1_dict["notes"]
+        # del highlight2_dict["notes"]
+        # return highlight1_dict == highlight2_dict
+        # if 
+        # for i in range(len(chap1.kindle_highlights))
+        # return chap1.name == chap2.name and chap1.kindle_highlights == chap2.kindle_highlights
+
+    def __init__(self, chapter_name):
+        self.kindle_highlights = []
+        self.name = chapter_name.strip()
+        # generate unique id from chapter name to avoid name collison?
+        # TODO
+        self.chapter_id = True
+    
+    def is_current_chapter(self, chapter_name):
+        # TODO: potential edge case - same chapter names for two diff chapters
+        """Check if the chapter heading points to the current chapter object"""
+        return self.chapter_name == chapter_name
