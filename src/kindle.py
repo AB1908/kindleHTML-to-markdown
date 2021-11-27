@@ -51,7 +51,51 @@ class KindleHighlights:
     # Allow overriding?
     # TODO: parse highlights
 
-    def create(self):
+    def __eq__(kh1, kh2):
+        from kindle import Highlight
+        if isinstance(kh1, Highlight) and isinstance(kh2, Highlight):
+            return True
+
+
+    # TODO: offload responsibility of html parsing to parser class?
+    def create_text_highlight(self, header_div, text_div):
+        """Extract data to create a highlight and invoke constructor.
+
+        Keyword arguments:
+        real -- the real part (default 0.0)
+        imag -- the imaginary part (default 0.0)
+        """ 
+        #TODO: add div ordering validation? Eg. noteText must come after noteHeading class
+        location_metadata = header_div.text.partition('-')[2].partition('>')
+        highlight_color = HighlightColor.get_color(header_div.span.text) 
+        highlight_location = location_metadata[2].strip()
+        # [Highlight (<span class="highlight_pink">pink</span>), -, PREFACE TO THE CHARLES DICKENS EDITION >  Location 103]
+                    # [chapter_heading, >, location]
+        highlight_text = text_div.text.strip()
+        highlight_chapter = location_metadata[0].strip()
+        # TODO: check chapter text and chapter object?
+        # TODO: check chapter numbering and creation?
+        return Highlight(highlight_chapter, highlight_location, highlight_color, highlight_text)
+
+    def create_new_note(self, header_div, text_div):
+        """Extract data to create a note and invoke constructor.
+
+        Keyword arguments:
+        text_div -- 
+        location_metadata -- 
+        """
+        # notes[chapter_marker].append(kindle_highlight)
+        # check div for chapter
+        # depending on chapter, later parse
+        # TODO standardise args for both funcs
+        location_metadata = header_div.text.partition('-')[2].partition('>')
+        chapter = location_metadata[0].strip()
+        location = location_metadata[2].strip()
+        text = text_div.text.strip()
+        note = Note(chapter, location, text)
+        return note
+
+    def parse_notes(self):
         pass
 
 
