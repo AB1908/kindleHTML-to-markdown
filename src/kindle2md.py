@@ -20,28 +20,6 @@ from bs4 import BeautifulSoup
 import kindle
 
 
-class HighlightColor(Enum):
-
-    # Note that this is dependent on the app itself.
-    PINK = 3
-    ORANGE = 4
-    BLUE = 2
-    YELLOW = 1
-
-    @staticmethod
-    def get_color(color_text):
-        if color_text == "pink":
-            color = HighlightColor.PINK
-        elif color_text == "blue":
-            color = HighlightColor.BLUE
-        elif color_text == "yellow":
-            color = HighlightColor.YELLOW
-        elif color_text == "orange":
-            color = HighlightColor.ORANGE
-        else:
-            raise Exception("Undefined color")
-        return color
-
 class HighlightsExtract:
 
     def file_handler():
