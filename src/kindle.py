@@ -98,14 +98,24 @@ class KindleHighlights:
     def parse_notes(self):
         pass
 
-
 class Highlight(AnnotationObject):
+
+    def __eq__(highlight1, highlight2):
+        if len(highlight1.notes) != len(highlight2.notes):
+            return False
+        for i in range(len(highlight2.notes)):
+            if highlight1.notes[i] != highlight2.notes[i]:
+                return False
+        highlight1_dict = vars(highlight1)
+        highlight2_dict = vars(highlight2)
+        del highlight1_dict["notes"]
+        del highlight2_dict["notes"]
+        return highlight1_dict == highlight2_dict
+
     def __init__(self, chapter, location, color, text):
-        this.color = color
-        this.text = text
-        this.location = location
-        this.chapter = chapter
-        this.notes = []
+        self.color = color
+        self.notes = []
+        super().__init__(chapter, location, text)
 
     def export_as_markdown(self):
         # TODO
