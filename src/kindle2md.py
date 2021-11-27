@@ -25,42 +25,15 @@ class HighlightsExtract:
     def file_handler():
         pass
 
-    try:
-        file_content = source.read_text(encoding='UTF-8')
-    except OSError as e:
-        print(f'Failed to read file: {e}.')
-        exit(1)
+    # try:
+    #     file_content = source.read_text(encoding='UTF-8')
+    # except OSError as e:
+    #     print(f'Failed to read file: {e}.')
+    #     exit(1)
 
-    soup = BeautifulSoup(file_content, 'html.parser')
+    # soup = BeautifulSoup(file_content, 'html.parser')
 
-
-    # def chapter_init(notes, location_data):
-    #     chapter_marker = location_data[0].strip()
-    #     location = location_data[-1].strip()
-    #     notes.setdefault(chapter_marker,[])
-    #     return chapter_marker
-
-    def create_highlight(text_div, header_div, location_data):
-        hightlight_color = HighlightColor.get_color(header_div.span.text.title()) 
-        highlight_location = location_data[2].strip()
-        highlight_text = text_div.text.strip()
-        highlight_chapter = location_data[0].strip()
-        # TODO: Highlight def
-        highlight = Highlight(highlight_chapter, highlight_location, highlight_color, highlight_text)
-        return highlight
-
-    def create_new_note(location, text):
-        # notes[chapter_marker].append(kindle_highlight)
-        # check div for chapter
-        # depending on chapter, later parse
-        # TODO: Note def
-        # DONE
-        chapter = location_data[0].strip()
-        location = location_data[2].strip()
-        note = Note(chapter, location, text)
-        return note
-
-    def parse_HTML():
+    def parse_HTML(self, soup):
         # TODO: refactor
         try:
             note_divs = soup.findAll("div", {'class': ["noteHeading","noteText"]})
