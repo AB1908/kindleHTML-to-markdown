@@ -94,35 +94,84 @@ class HighlightsExtract:
             print(f'Error parsing file: {e}')
             exit(1)
 
+    def parse_chapters(self, chapters):
+        def extract_location(kindle_highlight):
+            return int(kindle_highlight.location.split(" ")[1])
+
+        for chapter in chapters:
+            # TODO chapterwise note parsing
+            # Cases:
+            # 1. Independent note
+            # 2. Note with highlight
+            # 3. Independent highlight
+            # 4. Highlight with multiple notes
+            # TODO: location aware parsing?
+            cursor = None
+            location_marker = None
+            parsed_kindle_highlights = []
+
+            # HNHHNNNNNN
+            # NNH
+            # HHH
+            # NNN
+            # NHN
+            # TODO: Refactor into actual tests
+            for i, kindle_highlight in enumerate(chapter.kindle_highlights):
+                # TODO: expose controllable location difference?
+                # TODO: calculate location difference using highlight text length? a good approximation would be nice in place of an arbitrary value
+                if i == 0 and type(kindle_highlight).__name__ == "Highlight":
+                    cursor = kindle_highlight
+                    continue
+                if type(kindle_highlight).__name__ == "Note" and type(cursor).__name__ == "Highlight" and extract_location(kindle_highlight) - extract_location(cursor) < 4: # cond 2
+                    cursor.notes.append(kindle_highlight)
+                    # cursor = None
+                    continue
+                # "Location 1939"
+                # else:
+                parsed_kindle_highlights.append(cursor)
+                cursor = kindle_highlight
+                # TODO location parsing?
+                if True:
+                    location_marker = extract_location(kindle_highlight)
+                    # TODO: new note?
+                    pass
+                # last object left if not condition 2
+            parsed_kindle_highlights.append(cursor)
+            chapter.kindle_highlights = parsed_kindle_highlights
+        return chapters
+
     def output():
-        output = f'# {book_title}\n\n'
-        pandoc_div = ":::"
-        for chapter_marker in kindle_notes:
-            output += f'## {chapter_marker}\n\n'
-            for kindle_highlight in kindle_notes[chapter_marker]:
-                entry = pandoc_div
-                if kindle_highlight["type"] == "note":
-                    entry += 'standalone\n\n'
-                    entry += f'Note: {kindle_highlight["text"]}\n\n'
-                if kindle_highlight["type"] == "highlight":
-                    entry += f'{kindle_highlight["color"].lower()}\n\n'
-                    entry += f'{kindle_highlight["location"]}\n\n'
-                    entry += f'> {kindle_highlight["text"]}\n\n'
-                    for note_text in kindle_highlight["notes"]:
-                        entry += f'{note_text}\n\n'
-                entry += pandoc_div + "\n"
-                output += entry + "\n"
+        pass
+        # TODO: Markdown output
+        # output = f'# {book_title}\n\n'
+        # pandoc_div = ":::"
+        # for chapter_marker in kindle_notes:
+        #     output += f'## {chapter_marker}\n\n'
+        #     for kindle_highlight in kindle_notes[chapter_marker]:
+        #         entry = pandoc_div
+        #         if kindle_highlight["type"] == "note":
+        #             entry += 'standalone\n\n'
+        #             entry += f'Note: {kindle_highlight["text"]}\n\n'
+        #         if kindle_highlight["type"] == "highlight":
+        #             entry += f'{kindle_highlight["color"].lower()}\n\n'
+        #             entry += f'{kindle_highlight["location"]}\n\n'
+        #             entry += f'> {kindle_highlight["text"]}\n\n'
+        #             for note_text in kindle_highlight["notes"]:
+        #                 entry += f'{note_text}\n\n'
+        #         entry += pandoc_div + "\n"
+        #         output += entry + "\n"
 
-        try:
-            output = output.rstrip('\n')
-            dest.write_text(output, encoding='UTF-8')
-        except OSError as e:
-            print(f'Failed to write file: {e}')
-            exit(1)
-        print(f'Written to: {dest_name}')
+    #TODO: output to file
+        # try:
+        #     output = output.rstrip('\n')
+        #     dest.write_text(output, encoding='UTF-8')
+        # except OSError as e:
+        #     print(f'Failed to write file: {e}')
+        #     exit(1)
+        # print(f'Written to: {dest_name}')
 
 
-if __name__ == __main__:
+if __name__ == '__main__':
     script_name = basename(__file__)
     if len(argv) != 2:
         print(f'Usage: {script_name} html_file')
