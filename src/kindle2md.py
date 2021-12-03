@@ -12,13 +12,10 @@
 #       - 
 # TODO: testing setup
 
-
 from pathlib import Path
 from os.path import basename, splitext
 from sys import argv, exit
-from bs4 import BeautifulSoup
-import kindle
-
+from src import kindle
 
 class HighlightsExtract:
 
@@ -119,10 +116,11 @@ class HighlightsExtract:
             for i, kindle_highlight in enumerate(chapter.kindle_highlights):
                 # TODO: expose controllable location difference?
                 # TODO: calculate location difference using highlight text length? a good approximation would be nice in place of an arbitrary value
-                if i == 0 and type(kindle_highlight).__name__ == "Highlight":
+                # TODO: Better class checking
+                if i == 0 and isinstance(kindle_highlight, kindle.Highlight):
                     cursor = kindle_highlight
                     continue
-                if type(kindle_highlight).__name__ == "Note" and type(cursor).__name__ == "Highlight" and extract_location(kindle_highlight) - extract_location(cursor) < 4: # cond 2
+                if isinstance(kindle_highlight,kindle.Note) and isinstance(cursor, kindle.Highlight) and extract_location(kindle_highlight) - extract_location(cursor) < 4: # cond 2
                     cursor.notes.append(kindle_highlight)
                     # cursor = None
                     continue
