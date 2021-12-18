@@ -1,10 +1,10 @@
 from enum import Enum
 
-# TODO: Fix super() usage file wide
+# DONE: Fix super() usage file wide
 
 class HighlightColor(Enum):
 
-    # Note that this is dependent on the app itself.
+    # DOC: Note that this is dependent on the app itself.
     PINK = 3
     ORANGE = 4
     BLUE = 2
@@ -62,8 +62,8 @@ class KindleHighlights:
         """Extract data to create a highlight and invoke constructor.
 
         Keyword arguments:
-        real -- the real part (default 0.0)
-        imag -- the imaginary part (default 0.0)
+        header_div -- 
+        text_div -- 
         """ 
         #TODO: add div ordering validation? Eg. noteText must come after noteHeading class
         location_metadata = header_div.text.partition('-')[2].partition('>')
@@ -74,21 +74,18 @@ class KindleHighlights:
         highlight_text = text_div.text.strip()
         highlight_chapter = location_metadata[0].strip()
         # TODO: check chapter text and chapter object?
-        # TODO: check chapter numbering and creation?
+        # TODO: check chapter numbering and creation? maybe this should be offloaded to diff class
         return Highlight(highlight_chapter, highlight_location, highlight_color, highlight_text)
 
     def create_new_note(self, header_div, text_div):
         """Extract data to create a note and invoke constructor.
 
         Keyword arguments:
+        header_div -- 
         text_div -- 
-        location_metadata -- 
         """
-        # notes[chapter_marker].append(kindle_highlight)
-        # check div for chapter
-        # depending on chapter, later parse
-        # TODO standardise args for both funcs
-        location_metadata = header_div.text.partition('-')[2].partition('>')
+        # DONE standardise args for both funcs
+        location_metadata = header_div.text.strip().partition('-')[2].partition('>')
         chapter = location_metadata[0].strip()
         location = location_metadata[2].strip()
         text = text_div.text.strip()
@@ -118,7 +115,7 @@ class Highlight(AnnotationObject):
         super().__init__(chapter, location, text)
 
     def export_as_markdown(self):
-        # TODO
+        # TODO: must iterate over notes
         return ""
 
 class Note(AnnotationObject):
@@ -127,17 +124,12 @@ class Note(AnnotationObject):
     # As of now, it is a mystery as to how a note is standalone or related.
     # Hence the highlight and note objects have been kept separate as it cannot be discerned from the source.
     # TODO: note.is_standalone()?
-    # TODO: note structure testing
+    # DONE: note structure testing
 
     def __eq__(note1, note2):
         return vars(note1) == vars(note2)
 
-    # TODO: Check if this is required
-    # def __ne__(note1, note2):
-    #     return not note1 == note2
-
     def __init__(self, chapter, location, text):
-        # super(self, chapter, location, text)
         super().__init__(chapter, location, text)
 
     def export_as_markdown(self):
@@ -177,6 +169,8 @@ class Chapter():
         # TODO: potential edge case - same chapter names for two diff chapters
         """Check if the chapter heading points to the current chapter object"""
         return self.chapter_name == chapter_name
+
+    #TODO: export function
 
 class Book():
 
