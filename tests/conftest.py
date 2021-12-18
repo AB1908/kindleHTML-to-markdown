@@ -4,10 +4,37 @@ from pprint import pprint
 import pytest
 from src import kindle
 
+hi = 0
+ni = 2
+test_data = {
+    "HN": {"highlight": 0, "note": 2},
+    "NH": {"highlight": 2, "note": 0},
+    "HNH": {"highlight": [0,4], "note": [0]},
+    }
+    # H: for this case, we need a way to mark the downstream tests that should fail
+    # HNHHNNNNNN
+    # NNH
+    # HHH
+    # NNN
+    # NHN
+    # TODO: Refactor into actual tests
+# TODO: Edge cases
+#       - notes/highlights before a chapter def??
+#       - notes/highlights on chapter heading
+#       - 
+#       - 
+
+@pytest.fixture()
+def highlight_index():
+    return hi
+
+@pytest.fixture()
+def note_index():
+    return ni
+
 @pytest.fixture()
 def test_soup():
-    filename = "sample.html"
-    source = Path("./{}".format(filename))
+    source = Path("./{}.html".format("HN"))
     file_content = source.read_text(encoding="UTF-8")
     soup = BeautifulSoup(file_content, 'html.parser')
     return soup
@@ -17,20 +44,20 @@ def test_note_divs(test_soup):
     return test_soup.findAll("div", {'class': ["noteHeading","noteText"]})
 
 @pytest.fixture()
-def example_highlight(test_note_divs):
+def example_highlight(test_note_divs, highlight_index):
     def _example_highlight():
-        note_headers = test_note_divs[0].text.partition('-')
+        note_headers = test_note_divs[highlight_index].text.partition('-')
         location_metadata = note_headers[2].partition('>')
-        test_highlight = kindle.Highlight(location_metadata[0].strip(), location_metadata[2].strip(), kindle.HighlightColor.get_color(test_note_divs[0].span.text.strip()) , test_note_divs[1].text.strip())
+        test_highlight = kindle.Highlight(location_metadata[0].strip(), location_metadata[2].strip(), kindle.HighlightColor.get_color(test_note_divs[highlight_index].span.text.strip()) , test_note_divs[highlight_index+1].text.strip())
         return test_highlight
     return _example_highlight
     
 @pytest.fixture()
-def example_note(test_note_divs):
+def example_note(test_note_divs, note_index):
     def _example_note():
-        note_headers = test_note_divs[2].text.partition('-')
+        note_headers = test_note_divs[note_index].text.partition('-')
         location_metadata = note_headers[2].partition('>')
-        return kindle.Note(location_metadata[0].strip(), location_metadata[2].strip(), test_note_divs[3].text.strip())
+        return kindle.Note(location_metadata[0].strip(), location_metadata[2].strip(), test_note_divs[note_index+1].text.strip())
     return _example_note
 
 @pytest.fixture()
