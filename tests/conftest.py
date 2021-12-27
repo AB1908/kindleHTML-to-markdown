@@ -85,6 +85,16 @@ def example_parsed_chapter(example_highlight, example_note, test_note_divs):
 
 @pytest.fixture()
 def example_parsed_highlights(example_highlight, example_note):
-    example_highlight = example_highlight()
-    example_highlight.notes.append(example_note())
-    yield example_highlight
+    def _example_parsed_highlights():
+        test_parsed_highlight = example_highlight()
+        test_parsed_highlight.notes.append(example_note())
+        return test_parsed_highlight
+    return _example_parsed_highlights
+
+@pytest.fixture()
+def example_book(example_parsed_chapter):
+    def _example_book():
+        test_book = kindle.Book("David Copperfield")
+        test_book.chapters.append(example_parsed_chapter())
+        return test_book
+    return _example_book
