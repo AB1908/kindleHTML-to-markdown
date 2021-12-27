@@ -36,3 +36,65 @@ def test_note_inequality(example_note):
     example_note_copy = example_note()
     example_note_copy.text = "New text here" 
     assert example_note() != example_note_copy
+
+def test_example_parsed_highlight_export(example_parsed_highlights):
+    exported_highlight = """:::yellow
+
+> and as to the greater expediency of my travelling by waggon.
+
+expediency
+
+:::"""
+    assert example_parsed_highlights().export_as_markdown() == exported_highlight
+
+def test_example_highlight_export(example_highlight):
+    exported_highlight = """:::yellow
+
+> and as to the greater expediency of my travelling by waggon.
+
+:::"""
+    assert example_highlight().export_as_markdown() == exported_highlight
+
+def test_example_note_export(example_note):
+    exported_note = """expediency"""
+    assert example_note().export_as_markdown() == exported_note
+
+def test_highlight_with_two_notes(example_parsed_highlights, example_note):
+    exported_highlight = """:::yellow
+
+> and as to the greater expediency of my travelling by waggon.
+
+expediency
+
+expediency
+
+:::"""
+    test_parsed_highlight = example_parsed_highlights()
+    test_parsed_highlight.notes.append(example_note())
+    assert test_parsed_highlight.export_as_markdown() == exported_highlight
+
+def test_example_parsed_chapter(example_parsed_chapter):
+    exported_chapter = """## CHAPTER 5. I AM SENT AWAY FROM HOME
+
+:::yellow
+
+> and as to the greater expediency of my travelling by waggon.
+
+expediency
+
+:::"""
+    assert example_parsed_chapter().export_as_markdown() == exported_chapter
+
+def test_example_book(example_book):
+    exported_book = """# David Copperfield
+
+## CHAPTER 5. I AM SENT AWAY FROM HOME
+
+:::yellow
+
+> and as to the greater expediency of my travelling by waggon.
+
+expediency
+
+:::"""
+    assert example_book().export_as_markdown() == exported_book
