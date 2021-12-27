@@ -116,7 +116,11 @@ class Highlight(AnnotationObject):
 
     def export_as_markdown(self):
         # TODO: must iterate over notes
-        return ""
+        markdown_export = ":::" + self.color.name.lower() + "\n\n"
+        markdown_export += "> "+self.text + "\n"
+        for note in self.notes:
+            markdown_export += "\n" + note.export_as_markdown() + "\n"
+        return markdown_export + "\n:::"
 
 class Note(AnnotationObject):
     #Note object that contains note data like location and text
@@ -134,6 +138,7 @@ class Note(AnnotationObject):
 
     def export_as_markdown(self):
         # TODO
+        return self.text
         pass
 
 class Chapter():
@@ -170,10 +175,21 @@ class Chapter():
         """Check if the chapter heading points to the current chapter object"""
         return self.chapter_name == chapter_name
 
-    #TODO: export function
+    #DONE: export function
+    def export_as_markdown(self):
+        markdown_export = """## {}""".format(self.name) + "\n\n"
+        for item in self.kindle_highlights:
+            markdown_export += item.export_as_markdown()
+        return markdown_export
 
 class Book():
 
     def __init__(self, name):
         self.chapters = []
         self.name = name.strip()
+
+    def export_as_markdown(self):
+        markdown_export = """# {}""".format(self.name) + "\n\n"
+        for item in self.chapters:
+            markdown_export += item.export_as_markdown()
+        return markdown_export
