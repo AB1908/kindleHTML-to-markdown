@@ -184,12 +184,12 @@ class Chapter():
 
 class Book():
 
-    def __init__(self, name):
+    def __init__(self, title):
         self.chapters = []
-        self.name = name.strip()
+        self.title = title.strip()
 
     def export_as_markdown(self):
-        markdown_export = """# {}""".format(self.name) + "\n\n"
+        markdown_export = """# {}""".format(self.title) + "\n\n"
         for item in self.chapters:
             markdown_export += item.export_as_markdown()
         return markdown_export
