@@ -1,0 +1,13 @@
+# {{book.title}}
+{% for chapter in book.chapters %}## {{chapter.name}}
+{% for kh in chapter.kindle_highlights %}
+{% if kh.color is defined %}:::{{kh.color.name.lower()}}
+{% else %}:::
+{% endif %}
+> {{kh.text}}
+{% for note in kh['notes'] %}
+{{note.text}}
+{% endfor %}
+:::
+{% endfor %}
+{% endfor %}
