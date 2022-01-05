@@ -3,12 +3,11 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 import pytest
 from src import kindle
-from src import kindle
 from copy import deepcopy
 import pytest
 
 def test_parse_HTML_to_highlight_with_note(test_soup, example_chapter):
-    actual_chapter = kindle2md.HighlightsExtract().parse_HTML(test_soup)[0]
+    actual_chapter = kindle2md.HighlightsExtract().parse_HTML(test_soup).chapters[0]
     example_chapter = example_chapter()
     for i in range(len(actual_chapter.kindle_highlights)):
         assert vars(example_chapter.kindle_highlights[i]) == vars(actual_chapter.kindle_highlights[i])
@@ -19,8 +18,8 @@ def test_parse_HTML_to_highlight_with_note(test_soup, example_chapter):
 #     assert actual_parsed_chapter == [example_parsed_chapter()]
 
 test_data = {
-        "HN": {"highlight": [0], "note": [2]},
-        "NH": {"highlight": [2], "note": [0]},
+        "HN" : {"highlight": [0], "note": [2]},
+        "NH" : {"highlight": [2], "note": [0]},
         "HNH": {"highlight": [0,4], "note": [0]},
         "NNH": {"highlight": [4], "note": [0,2]},
         "HHH": {"highlight": [0,2,4], "note": []},
@@ -29,7 +28,7 @@ test_data = {
     }
 
 @pytest.mark.parametrize("test_filename", test_data.keys())
-def test_parsing_logic(test_note_divs, test_filename, example_chapter):
+def test_parsing_logic(test_note_divs, test_filename):
      # TODO: Chapterwise test cases
      # TODO: REFACTOR!!!!
 
@@ -83,5 +82,7 @@ def test_parsing_logic(test_note_divs, test_filename, example_chapter):
         example_parsed_chapter.kindle_highlights[0].notes.append(example_parsed_chapter.kindle_highlights[1])
         del example_parsed_chapter.kindle_highlights[1]
 
-    actual_parsed_chapter = kindle2md.HighlightsExtract().parse_chapters([test_chapter])
-    assert actual_parsed_chapter == [example_parsed_chapter]
+    test_book = kindle.Book("David Copperfield")
+    test_book.chapters = [test_chapter]
+    actual_parsed_book = kindle2md.HighlightsExtract().parse_chapters(test_book)
+    assert actual_parsed_book.chapters == [example_parsed_chapter]
