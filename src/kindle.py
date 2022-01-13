@@ -92,10 +92,10 @@ class KindleHighlights:
         note = Note(chapter, location, text)
         return note
 
-    def parse_notes(self):
-        pass
-
 class Highlight(AnnotationObject):
+
+    def is_highlight(self):
+        return True
 
     def __eq__(highlight1, highlight2):
         if len(highlight1.notes) != len(highlight2.notes):
@@ -114,14 +114,6 @@ class Highlight(AnnotationObject):
         self.notes = []
         super().__init__(chapter, location, text)
 
-    def export_as_markdown(self):
-        # TODO: must iterate over notes
-        markdown_export = ":::" + self.color.name.lower() + "\n\n"
-        markdown_export += "> "+self.text + "\n"
-        for note in self.notes:
-            markdown_export += "\n" + note.export_as_markdown() + "\n"
-        return markdown_export + "\n:::"
-
 class Note(AnnotationObject):
     #Note object that contains note data like location and text
     # Its relation to a highlight is best left to be determined in the KindleHighlight.
@@ -130,16 +122,14 @@ class Note(AnnotationObject):
     # TODO: note.is_standalone()?
     # DONE: note structure testing
 
+    def is_highlight(self):
+        return False
+
     def __eq__(note1, note2):
         return vars(note1) == vars(note2)
 
     def __init__(self, chapter, location, text):
         super().__init__(chapter, location, text)
-
-    def export_as_markdown(self):
-        # TODO
-        return self.text
-        pass
 
 class Chapter():
 
@@ -175,21 +165,8 @@ class Chapter():
         """Check if the chapter heading points to the current chapter object"""
         return self.chapter_name == chapter_name
 
-    #DONE: export function
-    def export_as_markdown(self):
-        markdown_export = """## {}""".format(self.name) + "\n\n"
-        for item in self.kindle_highlights:
-            markdown_export += item.export_as_markdown()
-        return markdown_export
-
 class Book():
 
     def __init__(self, title):
         self.chapters = []
         self.title = title.strip()
-
-    def export_as_markdown(self):
-        markdown_export = """# {}""".format(self.title) + "\n\n"
-        for item in self.chapters:
-            markdown_export += item.export_as_markdown()
-        return markdown_export
