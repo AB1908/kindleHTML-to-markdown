@@ -1,13 +1,29 @@
 # {{book.title}}
-{% for chapter in book.chapters %}## {{chapter.name}}
-{% for kh in chapter.kindle_highlights %}
-{% if kh.color is defined %}:::{{kh.color.name.lower()}}
-{% else %}:::
-{% endif %}
+
+{% for chapter in book.chapters -%}
+
+## {{chapter.name}}
+
+{% for kh in chapter.kindle_highlights -%}
+
+{% if kh.is_highlight() -%}
+
+:::{{kh.color.name.lower()}}
+
 > {{kh.text}}
-{% for note in kh['notes'] %}
+
+{% for note in kh.notes -%}
 {{note.text}}
+
 {% endfor %}
 :::
+{% else -%}
+:::
+
+{{kh.text}}
+
+:::
+{% endif %}
+
 {% endfor %}
 {% endfor %}
