@@ -11,12 +11,8 @@ from pathlib import Path
 from os.path import basename, splitext
 from sys import argv, exit
 from src import kindle
-from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
-# env = Environment(
-#     loader=PackageLoader("kindle2md"),
-#     autoescape=select_autoescape()
-# )
-env = Environment(loader=FileSystemLoader('templates'))
+from jinja2 import Environment, FileSystemLoader
+env = Environment(loader=FileSystemLoader('templates'),trim_blocks=True,lstrip_blocks=True)
 template = env.get_template('default.jinja')
 
 class HighlightsExtract:
