@@ -12,6 +12,7 @@ from os.path import basename, splitext
 from sys import argv, exit
 from src import kindle
 from jinja2 import Environment, FileSystemLoader
+from bs4 import BeautifulSoup
 env = Environment(loader=FileSystemLoader('templates'),trim_blocks=True,lstrip_blocks=True)
 template = env.get_template('default.jinja')
 
@@ -36,7 +37,6 @@ class HighlightsExtract:
         # TODO: refactor
         try:
             note_divs = soup.findAll("div", {'class': ["noteHeading","noteText"]})
-            # TODO: Book handling?
             book_title = soup.select_one('.bookTitle').contents[0].strip()
             book = kindle.Book(book_title)
             current_chapter = None
@@ -45,7 +45,7 @@ class HighlightsExtract:
                 note_type = note_divs[i]
                 note_text = note_divs[i+1]
                 extracted_chapter_name = self.chapter_from_div(note_type)
-                KindleHighlights = kindle.KindleHighlights()
+                KindleAnnotations = kindle.KindleAnnotations()
                 if current_chapter is None or current_chapter.name != extracted_chapter_name:
                     # DONE: parse note/highlight?
                     chapter = kindle.Chapter(extracted_chapter_name)
@@ -56,26 +56,14 @@ class HighlightsExtract:
                     note_headers = note_type.text.partition('-')
                     # TODO: chapter info?
                     note_type_text = note_headers[0].strip().split(" ")[0].strip()
-
-                    # Highlight (pink)
-                    # DONE: send all metadata to factory method or parse here and create there? IMO better to parse here since we explicitly want to decouple
-                    # the parsing from the object creation
-                    # if elem.text.strip().startswith("Highlight"):
                     if note_type_text == "Highlight":
-                        # DONE: handle highlight
-                        # highlight_metadata_array = note_headers
-                        # DONE: div validation here?
-                        parsed_highlight = KindleHighlights.create_text_highlight(note_type, note_text)
-
+                        parsed_highlight = KindleAnnotations.create_text_highlight(note_type, note_text)
                     else:
-                        # div type is a note then. need additional logic to categorise note location.
-                        # DONE: offload logic to separate class?
-                        parsed_highlight = KindleHighlights.create_new_note(note_type, note_text)
-                    current_chapter.kindle_highlights.append(parsed_highlight)
+                        parsed_highlight = KindleAnnotations.create_new_note(note_type, note_text)
+                    current_chapter.annotations.append(parsed_highlight)
             chapters.append(current_chapter)
             book.chapters = chapters[1:] # TODO: first chapter is none for some reason
             return book
-            # DONE: split object parsing into own function
 
         except AttributeError as e:
             print(f'Error parsing file: {e}')
@@ -86,17 +74,10 @@ class HighlightsExtract:
             return int(kindle_highlight.location.split(" ")[1])
 
         for chapter in book.chapters:
-            # TODO chapterwise note parsing
-            # Cases:
-            # 1. Independent note
-            # 2. Note with highlight
-            # 3. Independent highlight
-            # 4. Highlight with multiple notes
             # TODO: location aware parsing?
             cursor = None
             parsed_kindle_highlights = []
-
-            for i, kindle_highlight in enumerate(chapter.kindle_highlights):
+            for i, kindle_highlight in enumerate(chapter.annotations):
                 # TODO: expose controllable location difference?
                 # TODO: calculate location difference using highlight text length? a good approximation would be nice in place of an arbitrary value
                 # DONE: Better class checking
@@ -106,17 +87,11 @@ class HighlightsExtract:
                 if isinstance(kindle_highlight,kindle.Note) and isinstance(cursor, kindle.Highlight) and extract_location(kindle_highlight) - extract_location(cursor) < 4: # cond 2
                     cursor.notes.append(kindle_highlight)
                     continue
-                # else:
                 parsed_kindle_highlights.append(cursor)
                 cursor = kindle_highlight
-                # TODO location parsing?
-                # if True:
-                #     location_marker = extract_location(kindle_highlight)
-                #     # TODO: new note?
-                #     pass
             # last object left if not condition 2
             parsed_kindle_highlights.append(cursor)
-            chapter.kindle_highlights = parsed_kindle_highlights
+            chapter.annotations = parsed_kindle_highlights
         return book
 
     # def output():
@@ -141,8 +116,6 @@ if __name__ == '__main__':
         answer = input('Overwrite? [y/n] ')
         if answer.lower().strip() != 'y':
             exit(1)
-    from bs4 import BeautifulSoup
-    source = Path("./{}.html".format("David Copperfield - Notebook"))
     file_content = source.read_text(encoding="UTF-8")
     soup = BeautifulSoup(file_content, 'html.parser')
     kindle_book = HighlightsExtract().parse_HTML(soup)
