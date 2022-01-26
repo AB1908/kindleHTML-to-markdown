@@ -1,14 +1,12 @@
 from enum import Enum
 
-# DONE: Fix super() usage file wide
-
 class HighlightColor(Enum):
 
     # DOC: Note that this is dependent on the app itself.
+    YELLOW = 1
+    BLUE = 2
     PINK = 3
     ORANGE = 4
-    BLUE = 2
-    YELLOW = 1
 
     def __eq__(color1, color2):
         return color1.value == color2.value
@@ -38,17 +36,7 @@ class AnnotationObject:
     def export_as_markdown(self):
         raise NotImplementedError("Implement this method")
 
-class KindleMarkdown():
-    # list of highlights?
-
-    # TODO
-
-    pass
-
-class KindleHighlights:
-    # Pass input to this class which parses
-    # Also keep a separate export method for each class?
-    # Allow overriding?
+class KindleAnnotations:
     # TODO: parse highlights
 
     def __eq__(kh1, kh2):
@@ -69,8 +57,6 @@ class KindleHighlights:
         location_metadata = header_div.text.partition('-')[2].partition('>')
         highlight_color = HighlightColor.get_color(header_div.span.text) 
         highlight_location = location_metadata[2].strip()
-        # [Highlight (<span class="highlight_pink">pink</span>), -, PREFACE TO THE CHARLES DICKENS EDITION >  Location 103]
-                    # [chapter_heading, >, location]
         highlight_text = text_div.text.strip()
         highlight_chapter = location_metadata[0].strip()
         # TODO: check chapter text and chapter object?
@@ -84,7 +70,6 @@ class KindleHighlights:
         header_div -- 
         text_div -- 
         """
-        # DONE standardise args for both funcs
         location_metadata = header_div.text.strip().partition('-')[2].partition('>')
         chapter = location_metadata[0].strip()
         location = location_metadata[2].strip()
@@ -115,10 +100,6 @@ class Highlight(AnnotationObject):
         super().__init__(chapter, location, text)
 
 class Note(AnnotationObject):
-    #Note object that contains note data like location and text
-    # Its relation to a highlight is best left to be determined in the KindleHighlight.
-    # As of now, it is a mystery as to how a note is standalone or related.
-    # Hence the highlight and note objects have been kept separate as it cannot be discerned from the source.
     # TODO: note.is_standalone()?
     # DONE: note structure testing
 
@@ -134,27 +115,19 @@ class Note(AnnotationObject):
 class Chapter():
 
     def __eq__(chap1, chap2):
-        if len(chap1.kindle_highlights) != len(chap2.kindle_highlights):
+        if len(chap1.annotations) != len(chap2.annotations):
             return False
-        for i in range(len(chap1.kindle_highlights)):
-            if chap1.kindle_highlights[i] != chap2.kindle_highlights[i]:
+        for i in range(len(chap1.annotations)):
+            if chap1.annotations[i] != chap2.annotations[i]:
                 return False
         chap1_dict = vars(chap1)
         chap2_dict = vars(chap2)
-        del chap1_dict["kindle_highlights"]
-        del chap2_dict["kindle_highlights"]
+        del chap1_dict["annotations"]
+        del chap2_dict["annotations"]
         return chap1_dict == chap2_dict
-        # highlight1_dict = vars(highlight1)
-        # highlight2_dict = vars(highlight2)
-        # del highlight1_dict["notes"]
-        # del highlight2_dict["notes"]
-        # return highlight1_dict == highlight2_dict
-        # if 
-        # for i in range(len(chap1.kindle_highlights))
-        # return chap1.name == chap2.name and chap1.kindle_highlights == chap2.kindle_highlights
 
     def __init__(self, chapter_name):
-        self.kindle_highlights = []
+        self.annotations = []
         self.name = chapter_name.strip()
         # generate unique id from chapter name to avoid name collison?
         # TODO
