@@ -66,8 +66,8 @@ def example_chapter(example_highlight, example_note, test_note_divs):
         note_headers = test_note_divs[2].text.partition('-')
         test_chapter_name = note_headers[2].strip().partition('>')[0].strip()
         test_chapter = kindle.Chapter(test_chapter_name)
-        test_chapter.kindle_highlights.append(example_highlight())
-        test_chapter.kindle_highlights.append(example_note())
+        test_chapter.annotations.append(example_highlight())
+        test_chapter.annotations.append(example_note())
         return test_chapter
     return _example_chapter
 
@@ -79,7 +79,7 @@ def example_parsed_chapter(example_highlight, example_note, test_note_divs):
         test_parsed_chapter = kindle.Chapter(test_chapter_name)
         test_highlight = example_highlight()
         test_highlight.notes.append(example_note())
-        test_parsed_chapter.kindle_highlights.append(test_highlight)
+        test_parsed_chapter.annotations.append(test_highlight)
         return test_parsed_chapter
     return _example_parsed_chapter
 
