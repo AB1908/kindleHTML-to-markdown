@@ -4,15 +4,15 @@
 
 ## {{chapter.name}}
 
-{% for kh in chapter.annotations -%}
+{% for annotation in chapter.annotations -%}
 
-{% if kh.is_highlight() -%}
+{% if annotation.is_highlight() -%}
 
-:::{{kh.color.name.lower()}}
+:::{{annotation.color.name.lower()}}
 
-> {{kh.text}}
+> {{annotation.text}}
 
-{% for note in kh.notes -%}
+{% for note in annotation.notes -%}
 {{note.text}}
 
 {% endfor %}
@@ -20,7 +20,7 @@
 {% else -%}
 :::
 
-{{kh.text}}
+{{annotation.text}}
 
 :::
 {% endif %}
