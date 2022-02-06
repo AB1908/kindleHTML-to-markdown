@@ -99,13 +99,12 @@ class HighlightsExtract:
 
 if __name__ == '__main__':
     script_name = basename(__file__)
-    # if len(argv) != 2:
-    #     print(f'Usage: {script_name} html_file')
-    #     exit(1)
+    if len(argv) != 2:
+        print(f'Usage: {script_name} html_file')
+        exit(1)
 
-    # source_name = argv[1]
-    # dest_name = splitext(source_name)[0] + '.md'
-    source_name = "David Copperfield - Notebook.html"
+    source_name = argv[1]
+    dest_name = splitext(source_name)[0] + '.md'
     dest_name = splitext(source_name)[0] + '.md'
 
     source = Path(source_name)
