@@ -6,18 +6,6 @@ from src import kindle
 
 hi = 0
 ni = 2
-test_data = {
-    "HN": {"highlight": 0, "note": 2},
-    "NH": {"highlight": 2, "note": 0},
-    "HNH": {"highlight": [0,4], "note": [0]},
-    }
-    # H: for this case, we need a way to mark the downstream tests that should fail
-    # HNHHNNNNNN
-    # NNH
-    # HHH
-    # NNN
-    # NHN
-    # TODO: Refactor into actual tests
 # TODO: Edge cases
 #       - notes/highlights before a chapter def??
 #       - notes/highlights on chapter heading
