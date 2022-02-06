@@ -55,7 +55,7 @@ def extract_all_annotations(test_filename, test_note_divs):
 
 @pytest.mark.parametrize("test_filename", test_data.keys())
 def test_parsing_logic(test_filename):
-     # DONE: REFACTOR!!!!
+     # TODO: REFACTOR!!!!
     test_note_divs = generate_divs_from_file(test_filename)
     note_headers = test_note_divs[2].text.partition('-')
     test_chapter_name = note_headers[2].strip().partition('>')[0].strip()
